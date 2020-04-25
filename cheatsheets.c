@@ -9,6 +9,16 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+
+int file_exists(const char* path) {
+  struct stat buffer;
+  int exist = stat(path, &buffer);
+  if (exist == 0)
+    return 1;
+  else // -1
+    return 0;
+}
 
 char* join_path(const char* path, const char* basename, const char* ext) {
   
@@ -112,12 +122,30 @@ void print_cs(cs_file* cs_text) {
       exit(EXIT_FAILURE);
     }
 
-    fprintf(pipe, "%s\n", cs_text->text);
+    fprintf(pipe, "%s", cs_text->text);
     pclose(pipe);
   } else {
-    fprintf(stdout, "%s\n", cs_text->text);
+    fprintf(stdout, "%s", cs_text->text);
   }
 
+}
+
+void edit_cs(const char* cs_path) {
+  
+  char prog[] = "vim ";
+  int len_prog = strlen(prog);
+  char system_call[len_prog + strlen(cs_path) + 1];
+
+  system_call[0] = '\0';
+
+  strncpy(system_call, prog, len_prog + 1 );
+  strncpy(system_call + len_prog, cs_path, strlen(cs_path) + 1);
+
+  // fprintf(stdout, "%s\n", system_call);
+
+  if (file_exists(cs_path))
+    system(system_call);
+  
 }
 
 int main(int argc, char** argv) {
@@ -137,12 +165,13 @@ int main(int argc, char** argv) {
 
   const char* cs = argv[1];                   // Name of the cheatsheet
   char* cs_path = join_path(cs_dir, cs, ext); // Full path
-  cs_file* cs_text = read_cs(cs_path);        // Full text
-  print_cs(cs_text);                          // Page with less if too long
+  // cs_file* cs_text = read_cs(cs_path);        // Full text
+  // print_cs(cs_text);                          // Page with less if too long
+  edit_cs(cs_path);
 
   free(cs_path);
-  free(cs_text->text);
-  free(cs_text);
+  // free(cs_text->text);
+  // free(cs_text);
 
 }
 
