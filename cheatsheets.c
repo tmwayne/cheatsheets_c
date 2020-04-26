@@ -1,18 +1,11 @@
-/* 
- * cheatsheets.c
- *
- * Print useful commands and options for given topic
- *
- * Tyler Wayne © 2020
- */
+/* cheatsheets.c */
 
-#include <stdio.h> 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include "argparse.h"
 
-int file_exists(const char* path) {
+int path_exists(const char* path) {
   struct stat buffer;
   int exist = stat(path, &buffer);
   if (exist == 0)
@@ -142,45 +135,9 @@ void edit_cs(const char* cs_path) {
   strncpy(system_call, prog, len_prog + 1 );
   strncpy(system_call + len_prog, cs_path, strlen(cs_path) + 1);
 
-  // fprintf(stdout, "%s\n", system_call);
-
-  if (file_exists(cs_path))
+  if (path_exists(cs_path))
     system(system_call);
   
 }
 
-int main(int argc, char** argv) {
-
-  /* ARGUMENTS */
-  // const char* cs_dir = getenv("CHEATSHEETS_DIR");
-  const char* ext = ".txt";
-
-  // if (cs_dir == NULL) {
-    // fprintf(stderr, "Please set CHEATSHEETS_DIR\n");
-    // exit(EXIT_FAILURE);
-  // }
-
-  // Defaults
-  struct arguments arguments;
-  arguments.edit = 0;
-  arguments.cs_dir = getenv("CHEATSHEETS_DIR");
-
-  argp_parse(&argp, argc, argv, 0, 0, &arguments);
-
-  /* PROGRAM LOGIC */
-  const char* cs_name = arguments.args[0];
-  char* cs_path = join_path(arguments.cs_dir, cs_name, ext);
-
-  if (arguments.edit)
-    edit_cs(cs_path);
-  else {
-    cs_file* cs_text = read_cs(cs_path);
-    print_cs(cs_text);
-    free(cs_text->text);
-    free(cs_text);
-  }
-
-  free(cs_path);
-
-}
 

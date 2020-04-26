@@ -1,5 +1,5 @@
 #P=main
-OBJECTS=
+OBJECTS=cheatsheets.o configparse.o
 CFLAGS=-g -Wall -O0 --std=gnu11
 LDLIBS=
 LDFLAGS=
@@ -10,6 +10,6 @@ $(P): $(OBJECTS)
 clean: 
 	rm *.o
 
-run: $(P)
-	./$(P) $(PARGS)
+install:
+	install-sh --name cs main
 
