@@ -1,7 +1,7 @@
 /* 
  * cheatsheets.c
  *
- * Print a cheatsheet to the terminal to remind of useful commands
+ * Print useful commands and options for given topic
  *
  * Tyler Wayne © 2020
  */
@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include "argparse.h"
 
 int file_exists(const char* path) {
   struct stat buffer;
@@ -150,28 +151,36 @@ void edit_cs(const char* cs_path) {
 
 int main(int argc, char** argv) {
 
-  const char* cs_dir = getenv("CHEATSHEETS_DIR");
+  /* ARGUMENTS */
+  // const char* cs_dir = getenv("CHEATSHEETS_DIR");
   const char* ext = ".txt";
 
-  if (cs_dir == NULL) {
-    fprintf(stderr, "Please set CHEATSHEETS_DIR\n");
-    exit(EXIT_FAILURE);
-  }
+  // if (cs_dir == NULL) {
+    // fprintf(stderr, "Please set CHEATSHEETS_DIR\n");
+    // exit(EXIT_FAILURE);
+  // }
 
-  if (argc != 2) {
-    fprintf(stderr, "Usage: %s cheatsheet\n", argv[0]);
-    exit(EXIT_FAILURE);
-  }
+  // Defaults
+  struct arguments arguments;
+  arguments.edit = 0;
+  arguments.cs_dir = getenv("CHEATSHEETS_DIR");
 
-  const char* cs = argv[1];                   // Name of the cheatsheet
-  char* cs_path = join_path(cs_dir, cs, ext); // Full path
-  // cs_file* cs_text = read_cs(cs_path);        // Full text
-  // print_cs(cs_text);                          // Page with less if too long
-  edit_cs(cs_path);
+  argp_parse(&argp, argc, argv, 0, 0, &arguments);
+
+  /* PROGRAM LOGIC */
+  const char* cs_name = arguments.args[0];
+  char* cs_path = join_path(arguments.cs_dir, cs_name, ext);
+
+  if (arguments.edit)
+    edit_cs(cs_path);
+  else {
+    cs_file* cs_text = read_cs(cs_path);
+    print_cs(cs_text);
+    free(cs_text->text);
+    free(cs_text);
+  }
 
   free(cs_path);
-  // free(cs_text->text);
-  // free(cs_text);
 
 }
 
