@@ -1,15 +1,22 @@
-#P=main
-OBJECTS=cheatsheets.o configparse.o
-CFLAGS=-g -Wall -O0 --std=gnu11
-LDLIBS=
-LDFLAGS=
-CC=gcc
+TARGET ?= main
+BUILD_DIR ?= build
+SRC_DIRS ?= src
 
-$(P): $(OBJECTS)
+SRCS := $(shell find $(SRC_DIRS) -name *.c)
+OBJS := $(addsuffix .o,$(basename $(SRCS)))
+DEPS := $(OBJS:.o=.d)
 
-clean: 
-	rm *.o
+INC_DIRS := $(shell find $(SRC_DIRS) -type d)
+INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-install:
-	install-sh --name cs main
+CFLAGS ?= $(INC_FLAGS) -MMD -MP
 
+$(TARGET): $(OBJS)
+	$(CC) $(LDFLAGS) $(OBJS) -o $@ $(LOADLIBES) $(LDLIBS)
+
+.PHONY: clean
+
+clean:
+	$(RM) $(TARGET) $(OBJS) $(DEPS)
+
+-include $(DEPS)

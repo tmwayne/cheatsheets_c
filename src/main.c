@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
   char* ext = ".txt";
   // Configurations
   struct configs configs;
-  config_parse("config.txt", &configs);
+  config_parse("/home/tyler/.cheatsheetsrc", &configs);
 
   // Defaults
   struct arguments arguments;
