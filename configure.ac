@@ -24,3 +24,20 @@ AC_FUNC_REALLOC
 
 AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
+
+echo \
+"--------------------------------------------------
+
+  ${PACKAGE_NAME} Version ${PACKAGE_VERSION}
+
+  Prefix: '${prefix}'
+  Compiler: '${CC} ${CFLAGS} ${CPPFLAGS}'
+
+  Package features:
+
+  Now type 'make @<:@<target>@:>@'
+    where the optional <target> is:
+      all               - build all binaries
+      install           - install everything
+
+--------------------------------------------------"
