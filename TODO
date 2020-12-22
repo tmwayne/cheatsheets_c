@@ -1,0 +1,4 @@
+create trim function to remove ending new lines
+fix static buffer settings in configparse
+add new file creation with template functionality
+add unit test
